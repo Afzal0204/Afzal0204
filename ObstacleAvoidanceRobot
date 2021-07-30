@@ -1,0 +1,72 @@
+
+                           //-------->>>>>>>>> Obstacle Avodance Robot <<<<<<<<<----------//
+                            //-------->>>>>>>>> Welcome To TechnoXian <<<<<<<<<----------//
+
+int trig = 3;     // Ultrasonic Sensor Pin which is connected with the Arduino digital Pin no. 3    
+int echo = 4;     // Ultrasonic Sensor Pin which is connected with the Arduino digital Pin no. 4
+
+int in1 = 11;    //Motor Driver Pin in1 which is connected with the Arduino digital Pin no. 11
+int in2 = 10;    //Motor Driver Pin in2 which is connected with the Arduino digital Pin no. 10
+int in3 = 9;     //Motor Driver Pin in3 which is connected with the Arduino digital Pin no. 9
+int in4 = 8;     //Motor Driver Pin in4 which is connected with the Arduino digital Pin no. 8
+int ena = 6;     //Motor Driver Pin EnA which is connected with the Arduino digital Pin no. 6(PWM Pin)
+int enb = 5;     //Motor Driver Pin EnB which is connected with the Arduino digital Pin no. 5(PWM Pin)
+                                                                       
+long duration;
+float distance,x, area , circle_area;                                          
+void setup() 
+{
+  // put your setup code here, to run once:
+pinMode(trig, OUTPUT);
+pinMode(echo, INPUT);
+                                                         
+ pinMode(in1, OUTPUT);  //Motor Driver Pin in1 always for the Output
+ pinMode(in2, OUTPUT);  //Motor Driver Pin in2 always for the Output
+ pinMode(in3, OUTPUT);  //Motor Driver Pin in3 always for the Output
+ pinMode(in4, OUTPUT);  //Motor Driver Pin in4 always for the Output
+pinMode(ena, OUTPUT);   //Motor Driver Pin EnA always for the Output
+pinMode(enb, OUTPUT);   //Motor Driver Pin EnB always for the Output
+  Serial.begin(9600);   // This tells the Arduino to get ready to exchange messages with the Serial Monitor at a data rate of 9600 bits per s. 
+}
+
+void loop()   // The code inside the loop function runs over and over as long as the Maker Board is turned ON.
+{
+int dist=calculateDistance();      
+    delay(100);
+    Serial.println(distance);  // It is use to show the output (while robot is connected) in the software Serial Monitor
+    
+ 
+    if (dist <= 25 )           // Ultrasonic Sensor Sense object distance(25cm)      
+    {
+  
+analogWrite(ena, 150);           
+analogWrite(enb, 150);
+  digitalWrite(in1,LOW);           // For Left or Right purpose whenever the object(25cm) infont of the Robot then it get turn
+  digitalWrite(in2,HIGH);      
+  digitalWrite(in3,LOW);
+ digitalWrite(in4,LOW);
+ Serial.println("Objects");
+    }
+    else                               
+    {
+  analogWrite(ena, 100);
+analogWrite(enb, 100);    
+ digitalWrite(in1,HIGH);                 // In Forward Direction
+digitalWrite(in2,LOW);
+digitalWrite(in3,HIGH);
+digitalWrite(in4,LOW);
+                                     
+Serial.println("No objects");           // Serial.println is use to show ouput in the Serial Monitor
+    }
+}
+int calculateDistance()
+{
+  digitalWrite(trig,LOW);              // It is for the Backward Direction
+  delayMicroseconds(2);
+  digitalWrite(trig,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig,LOW);
+  duration=pulseIn(echo,HIGH);
+  distance=duration*0.034/2;
+  return distance;
+}
